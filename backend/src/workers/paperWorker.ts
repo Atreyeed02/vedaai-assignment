@@ -1,5 +1,4 @@
 import { Worker } from "bullmq";
-import { redis } from "../config/redis";
 
 new Worker(
   "paper-generation",
@@ -33,8 +32,7 @@ new Worker(
 
   {
     connection: {
-  host: "127.0.0.1",
-  port: 6379,
-},
+      url: process.env.REDIS_URL,
+    },
   }
 );
