@@ -26,21 +26,38 @@ new Worker(
         setTimeout(resolve, 3000)
       );
 
-      const generatedPaper = {
-        sections: [
-          {
-            title: "Section A",
-            difficulty: "Easy",
-            questions: [
-              {
-                question: "Define Force",
-                marks: 2,
-              },
-            ],
-          },
-        ],
-      };
+      const sampleQuestions = [
+  "Define Force",
+  "What is Newton's First Law?",
+  "Explain gravity",
+  "What is friction?",
+  "State Ohm's Law",
+  "Define acceleration",
+  "What is momentum?",
+  "Explain kinetic energy",
+];
 
+const randomQuestion =
+  sampleQuestions[
+    Math.floor(
+      Math.random() * sampleQuestions.length
+    )
+  ];
+
+const generatedPaper = {
+  sections: [
+    {
+      title: "Section A",
+      difficulty: "Easy",
+      questions: [
+        {
+          question: randomQuestion,
+          marks: 2,
+        },
+      ],
+    },
+  ],
+};
       console.log("✅ Paper Generated");
 
       getIO().emit("paper-status", {
