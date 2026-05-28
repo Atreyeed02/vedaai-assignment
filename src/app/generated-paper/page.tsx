@@ -176,10 +176,62 @@ export default function GeneratedPaperPage() {
   }, [jobId]);
 
   // DOWNLOAD PDF
-  const downloadPDF = () => {
-    window.print();
-  };
+  
+const downloadPDF = () => {
 
+  const printContents =
+    document.getElementById(
+      "paper"
+    )?.innerHTML;
+
+  const originalContents =
+    document.body.innerHTML;
+
+  if (!printContents) return;
+
+  document.body.innerHTML = `
+    <html>
+      <head>
+        <title>Question Paper</title>
+
+        <style>
+
+          body{
+            padding:40px;
+            font-family: Arial, sans-serif;
+            background:white;
+            color:black;
+          }
+
+          .paper-container{
+            max-width:900px;
+            margin:auto;
+          }
+
+          h1,h2,h3,h4,h5,h6{
+            margin:0;
+          }
+
+        </style>
+      </head>
+
+      <body>
+
+        <div class="paper-container">
+          ${printContents}
+        </div>
+
+      </body>
+    </html>
+  `;
+
+  window.print();
+
+  document.body.innerHTML =
+    originalContents;
+
+  window.location.reload();
+};
   // REGENERATE
   const regeneratePaper = async () => {
   try {
