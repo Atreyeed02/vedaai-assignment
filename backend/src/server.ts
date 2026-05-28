@@ -2,7 +2,7 @@ import http from "http";
 import app from "./app";
 import connectDB from "./config/db";
 import { initSocket } from "./socket";
-
+import "./workers/paperWorker";
 const PORT = process.env.PORT || 5000;
 
 connectDB();
