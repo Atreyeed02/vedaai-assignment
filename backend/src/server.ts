@@ -1,19 +1,11 @@
 import http from "http";
-import dotenv from "dotenv";
-
 import app from "./app";
-
 import connectDB from "./config/db";
-
-import { initSocket } from "./socket/socket";
-
-import "./workers/paperWorker";
-
-dotenv.config();
-
-connectDB();
+import { initSocket } from "./socket";
 
 const PORT = process.env.PORT || 5000;
+
+connectDB();
 
 const server = http.createServer(app);
 

@@ -1,13 +1,31 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import Sidebar from "@/components/layout/sidebar";
 import DashboardHeader from "@/components/dashboard/dashboard-header";
 
 import { api } from "@/lib/api";
+import { socket } from "@/lib/socket";
 
-// Difficulty badge helper
+// TYPES
+type Question = {
+  question: string;
+  marks: number;
+};
+
+type Section = {
+  title: string;
+  difficulty: string;
+  instruction: string;
+  questions: Question[];
+};
+
+type Paper = {
+  sections: Section[];
+};
+
+// DIFFICULTY BADGE
 const getDifficultyBadge = (difficulty: string) => {
   switch (difficulty.toLowerCase()) {
     case "easy":
@@ -41,64 +59,75 @@ const getDifficultyBadge = (difficulty: string) => {
 };
 
 export default function GeneratedPaperPage() {
-  const params = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : new URLSearchParams("");
-  const jobId = params.get("jobId");
-
   const [loading, setLoading] = useState(false);
-  const [generating, setGenerating] = useState(() => Boolean(jobId));
-  
 
-  const [paper, setPaper] = useState({
-    sections: [
-      {
-        title: "Section A",
-        difficulty: "Easy",
-        instruction:
-          "Attempt all questions. Each question carries marks as indicated.",
+  const [jobId, setJobId] = useState<string | null>(null);
 
-        questions: [
-          {
-            question: "Define electroplating.",
-            marks: 2,
-          },
+  const [generating, setGenerating] = useState(false);
 
-          {
-            
-            question: "Explain electric current.",
-            marks: 3,
-          },
-        ],
-      },
+  const [status, setStatus] = useState("queued");
 
-      {
-        title: "Section B",
-        difficulty: "Medium",
-        instruction:
-          "Answer the following question in detail.",
-
-        questions: [
-          {
-            question: "Explain electrolysis process.",
-            marks: 5,
-          },
-        ],
-      },
-    ],
+  const [paper, setPaper] = useState<Paper>({
+    sections: [],
   });
 
-  // POLLING GENERATED PAPER
+  // GET JOB ID
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams(
+      window.location.search
+    );
 
-    const jobId = params.get("jobId");
+    const id = params.get("jobId");
 
+    if (id) {
+      setJobId(id);
+
+      setGenerating(true);
+    }
+  }, []);
+
+  // SOCKET REALTIME UPDATES
+  useEffect(() => {
     if (!jobId) return;
 
-    let intervalId: ReturnType<typeof setInterval> | null = null;
+    socket.connect();
 
-    const checkJobStatus = async () => {
+    socket.on("paper-status", (data) => {
+      console.log("Socket Update:", data);
+
+      setStatus(data.status);
+
+      if (data.jobId !== jobId) return;
+
+      if (data.status === "completed") {
+        if (data.paper) {
+          setPaper(data.paper);
+        }
+
+        setGenerating(false);
+      }
+
+      if (data.status === "failed") {
+        setGenerating(false);
+      }
+    });
+
+    return () => {
+      socket.off("paper-status");
+    };
+  }, [jobId]);
+
+  // POLLING FALLBACK
+  useEffect(() => {
+    if (!jobId) return;
+
+    let intervalId: ReturnType<typeof setInterval>;
+
+    const checkStatus = async () => {
       try {
-        const response = await api.get(`/paper/status/${jobId}`);
+        const response = await api.get(
+          `/paper/status/${jobId}`
+        );
 
         const data = response.data;
 
@@ -108,133 +137,56 @@ export default function GeneratedPaperPage() {
               setPaper(data.result.paper);
             }
 
+            setStatus("completed");
+
             setGenerating(false);
 
-            if (intervalId) {
-              clearInterval(intervalId);
-            }
+            clearInterval(intervalId);
           }
 
           if (data.state === "failed") {
+            setStatus("failed");
+
             setGenerating(false);
 
-            if (intervalId) {
-              clearInterval(intervalId);
-            }
+            clearInterval(intervalId);
           }
         }
       } catch (error) {
         console.error("Polling Error:", error);
 
+        setStatus("failed");
+
         setGenerating(false);
 
-        if (intervalId) {
-          clearInterval(intervalId);
-        }
-      }
-    };
-
-    checkJobStatus();
-
-    intervalId = setInterval(checkJobStatus, 3000);
-
-    return () => {
-      if (intervalId) {
         clearInterval(intervalId);
       }
     };
-  }, []);
+
+    checkStatus();
+
+    intervalId = setInterval(
+      checkStatus,
+      3000
+    );
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [jobId]);
 
   // DOWNLOAD PDF
   const downloadPDF = () => {
     window.print();
   };
 
-  // REGENERATE PAPER
+  // REGENERATE
   const regeneratePaper = async () => {
     setLoading(true);
 
     await new Promise((resolve) =>
       setTimeout(resolve, 1500)
     );
-
-    const generatedPapers = [
-      {
-        sections: [
-          {
-            title: "Section A",
-            difficulty: "Easy",
-            instruction:
-              "Attempt all questions.",
-
-            questions: [
-              {
-                question: "Define force.",
-                marks: 2,
-              },
-
-              {
-                question: "What is friction?",
-                marks: 2,
-              },
-            ],
-          },
-
-          {
-            title: "Section B",
-            difficulty: "Hard",
-            instruction:
-              "Answer in detail.",
-
-            questions: [
-              {
-                question:
-                  "Explain Newton's Laws.",
-
-                marks: 5,
-              },
-            ],
-          },
-        ],
-      },
-
-      {
-        sections: [
-          {
-            title: "Section A",
-            difficulty: "Medium",
-            instruction:
-              "Attempt all questions.",
-
-            questions: [
-              {
-                question:
-                  "Define evaporation.",
-
-                marks: 3,
-              },
-
-              {
-                question:
-                  "What is osmosis?",
-
-                marks: 2,
-              },
-            ],
-          },
-        ],
-      },
-    ];
-
-    const randomPaper =
-      generatedPapers[
-        Math.floor(
-          Math.random() *
-            generatedPapers.length
-        )
-      ];
-
-    setPaper(randomPaper);
 
     setLoading(false);
   };
@@ -251,7 +203,7 @@ export default function GeneratedPaperPage() {
         />
 
         <main className="flex-1 overflow-y-auto p-6 bg-black">
-          {/* TOP BANNER */}
+          {/* HERO */}
           <div className="relative bg-black p-8 mb-8 border border-zinc-800">
             <div className="relative z-10">
               <div className="flex items-center gap-3 mb-4">
@@ -267,7 +219,7 @@ export default function GeneratedPaperPage() {
               </h1>
 
               <p className="text-zinc-400 mt-5 text-[15px] leading-7 max-w-3xl">
-                Your customized CBSE Grade 8 Science paper has been generated successfully.
+                Your AI generated paper is ready.
               </p>
 
               <div className="flex items-center gap-4 mt-7">
@@ -290,7 +242,19 @@ export default function GeneratedPaperPage() {
             </div>
           </div>
 
+          {/* STATUS */}
+          <div className="mb-4">
+            <p className="text-lg font-semibold text-white">
+              Status: {status}
+            </p>
+          </div>
+
           {/* PAPER */}
+          <div className="mb-4">
+  <p className="text-lg font-semibold text-white">
+    Status: {status}
+  </p>
+</div>
           <div
             id="paper"
             className="max-w-4xl mx-auto bg-white text-black p-10 shadow-2xl"
@@ -312,7 +276,7 @@ export default function GeneratedPaperPage() {
                   </h1>
 
                   <p className="mt-2 text-sm uppercase tracking-widest">
-                    Class VIII • Science Examination
+                    AI Assessment Paper
                   </p>
                 </div>
 
@@ -343,11 +307,8 @@ export default function GeneratedPaperPage() {
 
                 {/* SECTIONS */}
                 <div className="space-y-10">
-                  {paper.sections.map(
-                    (
-                      section,
-                      sectionIndex
-                    ) => {
+                  {paper.sections?.map(
+                    (section, sectionIndex) => {
                       const badge =
                         getDifficultyBadge(
                           section.difficulty
@@ -364,25 +325,18 @@ export default function GeneratedPaperPage() {
                               <span
                                 className={`px-2 py-1 rounded-full text-xs border ${badge.bg} ${badge.text} ${badge.border}`}
                               >
-                                {
-                                  section.difficulty
-                                }
+                                {section.difficulty}
                               </span>
                             </div>
                           </div>
 
                           <p className="italic text-gray-600 mb-6">
-                            {
-                              section.instruction
-                            }
+                            {section.instruction}
                           </p>
 
                           <div className="space-y-6">
-                            {section.questions.map(
-                              (
-                                q,
-                                index
-                              ) => (
+                            {section.questions?.map(
+                              (q, index) => (
                                 <div
                                   key={index}
                                   className="flex justify-between gap-4"
@@ -392,15 +346,11 @@ export default function GeneratedPaperPage() {
                                       {index + 1}.
                                     </span>
 
-                                    {
-                                      q.question
-                                    }
+                                    {q.question}
                                   </div>
 
                                   <div className="font-bold whitespace-nowrap">
-                                    [
-                                    {q.marks}{" "}
-                                    Marks]
+                                    [{q.marks} Marks]
                                   </div>
                                 </div>
                               )
