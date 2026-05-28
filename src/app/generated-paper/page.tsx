@@ -182,15 +182,43 @@ export default function GeneratedPaperPage() {
 
   // REGENERATE
   const regeneratePaper = async () => {
+  try {
+
     setLoading(true);
 
-    await new Promise((resolve) =>
-      setTimeout(resolve, 1500)
+    setGenerating(true);
+
+    setStatus("queued");
+
+    const response = await api.post(
+      "/paper/regenerate",
+      {
+        jobId,
+      }
     );
 
-    setLoading(false);
-  };
+    if (response.data.success) {
 
+      if (response.data.jobId) {
+        setJobId(response.data.jobId);
+      }
+
+      setStatus("generating");
+    }
+
+  } catch (error) {
+
+    console.error("Regenerate Error:", error);
+
+    setStatus("failed");
+
+    setGenerating(false);
+
+  } finally {
+
+    setLoading(false);
+  }
+};
   return (
     <div className="dark flex h-screen bg-black overflow-hidden text-white">
       <Sidebar />
