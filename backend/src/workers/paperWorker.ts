@@ -71,7 +71,7 @@ new Worker(
   },
 
   {
-    connection: redisConnection,
+    connection: redisConnection.duplicate(),
   }
 );
 
