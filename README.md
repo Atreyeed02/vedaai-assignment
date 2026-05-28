@@ -1032,7 +1032,7 @@ jobs:
 
 ## 📸 Screenshots
 
-> *Add screenshots by replacing the placeholder paths below*
+> 
 
 ![Dashboard](./screenshots/dashboard.png)
 
