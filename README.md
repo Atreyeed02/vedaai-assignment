@@ -24,7 +24,8 @@
 
 <br />
 
-[🚀 Live Demo](#) &nbsp;·&nbsp; [📖 Documentation](#) &nbsp;·&nbsp; [🐛 Report Bug](#) &nbsp;·&nbsp; [✨ Request Feature](#)
+[🚀 Frontend Live](https://vedaai-assignment-39qj.onrender.com) &nbsp;&nbsp;
+[⚙️ Backend API](https://vedaai-assignment-1.onrender.com) &nbsp;·&nbsp; [📖 Documentation](#) &nbsp;·&nbsp; [🐛 Report Bug](#) &nbsp;·&nbsp; [✨ Request Feature](#)
 
 ---
 
@@ -332,7 +333,7 @@ Before you begin, ensure you have the following installed:
 ### 1️⃣ Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/vedaai.git
+git clone https://github.com/Atreyeed02/vedaai-assignment.git
 cd vedaai
 ```
 
@@ -790,7 +791,7 @@ WAITING → ACTIVE → COMPLETED
 
 ## 🛣️ API Endpoints
 
-### Base URL: `https://your-backend.onrender.com/api/v1`
+### Base URL: `https://vedaai-assignment-1.onrender.com/api/v1`
 
 ---
 
@@ -973,8 +974,8 @@ npm i -g vercel
 vercel --prod
 
 # Set environment variables in Vercel dashboard:
-# NEXT_PUBLIC_API_URL=https://your-backend.onrender.com/api/v1
-# NEXT_PUBLIC_SOCKET_URL=https://your-backend.onrender.com
+# NEXT_PUBLIC_API_URL=https://vedaai-assignment-1.onrender.com/api/v1
+# NEXT_PUBLIC_SOCKET_URL=[url](https://vedaai-assignment-1.onrender.com)
 ```
 
 ### Backend — Render
@@ -1142,6 +1143,6 @@ This project demonstrates practical mastery of modern full-stack engineering: no
 
 *If you found this project interesting, feel free to ⭐ the repository!*
 
-[![GitHub stars](https://img.shields.io/github/stars/your-username/vedaai?style=social)](https://github.com/your-username/vedaai)
+[![GitHub stars](https://img.shields.io/github/stars/your-username/vedaai?style=social)](https://github.com/Atreyeed02/vedaai-assignment)
 
 </div>
