@@ -1034,21 +1034,13 @@ jobs:
 
 > *Add screenshots by replacing the placeholder paths below*
 
-### 🏠 Dashboard / Home
-![Dashboard](.github/screenshots/dashboard.png)
+![Dashboard](./screenshots/dashboard.png)
 
-### 📝 Assignment Creation Form
-![Create Assignment](.github/screenshots/create-assignment.png)
+![Create Assignment](./screenshots/create-assignment.png)
 
-### ⏳ Generation in Progress (Realtime)
-![Generating](.github/screenshots/generating.png)
+![Generated Paper](./screenshots/generated-paper.png)
 
-### 📄 Generated Question Paper
-![Generated Paper](.github/screenshots/generated-paper.png)
-
-### 📥 PDF Export
-![PDF Export](.github/screenshots/pdf-export.png)
-
+![PDF Preview](./screenshots/pdf-preview.png)
 ---
 
 <br />
