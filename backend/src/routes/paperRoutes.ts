@@ -4,18 +4,32 @@ import { Job } from "bullmq";
 
 const router = express.Router();
 
-router.post("/generate", async (req, res) => {
-  const job = await paperQueue.add(
-    "generate-paper",
-    {
-      subject: "Science",
-    }
-  );
+router.post("/regenerate", async (req, res) => {
+  try {
 
-  res.json({
-    success: true,
-    jobId: job.id,
-  });
+    const job = await paperQueue.add(
+      "generate-paper",
+      {
+        subject: "Science",
+      }
+    );
+
+    res.json({
+      success: true,
+      jobId: job.id,
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to regenerate paper",
+      error:
+        error instanceof Error
+          ? error.message
+          : String(error),
+    });
+  }
 });
 
 router.get("/status/:jobId", async (req, res) => {
