@@ -1,4 +1,7 @@
+import dotenv from "dotenv";
+dotenv.config();
 import { Worker } from "bullmq";
+import { redisConnection } from "../config/redis";
 
 new Worker(
   "paper-generation",
@@ -31,8 +34,8 @@ new Worker(
   },
 
   {
-    connection: {
-      url: process.env.REDIS_URL,
-    },
+    connection: redisConnection,
   }
 );
+
+console.log("🚀 Worker Started");

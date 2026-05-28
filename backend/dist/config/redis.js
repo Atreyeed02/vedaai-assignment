@@ -1,15 +1,11 @@
 "use strict";
-
-var __importDefault =
-  (this && this.__importDefault) ||
-  function (mod) {
-    return mod && mod.__esModule ? mod : { default: mod };
-  };
-
 Object.defineProperty(exports, "__esModule", { value: true });
-
-exports.redis = void 0;
-
-import ioredis from "ioredis";
-
-exports.redis = new ioredis(process.env.REDIS_URL);
+exports.redisConnection = void 0;
+exports.redisConnection = {
+    host: process.env.REDIS_HOST,
+    port: Number(process.env.REDIS_PORT),
+    username: process.env.REDIS_USERNAME,
+    password: process.env.REDIS_PASSWORD,
+    tls: {},
+    maxRetriesPerRequest: null,
+};

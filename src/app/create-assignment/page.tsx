@@ -108,14 +108,14 @@ export default function CreateAssignment() {
     };
 
     console.log(
-      "[TEMPORARY DEBUG] Sending API request to POST /api/assignments",
+      "[TEMPORARY DEBUG] Sending API request to POST /assignments",
       formData
     );
 
     const response = await api.post(
-      "/assignments",
-      formData
-    );
+  "/assignments",
+  formData
+);
 
     console.log(
       "[TEMPORARY DEBUG] API Response received:",
