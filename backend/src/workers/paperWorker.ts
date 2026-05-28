@@ -3,7 +3,7 @@ dotenv.config();
 
 import { Worker } from "bullmq";
 
-import { redisConnection } from "../config/redis";
+import { redisConnection } from "../redis";
 import { getIO } from "../socket";
 
 new Worker(
@@ -15,7 +15,6 @@ new Worker(
 
     console.log("📄 Processing Job:", job.id);
 
-    // 🔥 Emit generating status
     getIO().emit("paper-status", {
       status: "generating",
       assignmentId,
@@ -23,7 +22,6 @@ new Worker(
 
     try {
 
-      // Fake AI delay
       await new Promise((resolve) =>
         setTimeout(resolve, 3000)
       );
@@ -45,7 +43,6 @@ new Worker(
 
       console.log("✅ Paper Generated");
 
-      // ✅ Emit completed status
       getIO().emit("paper-status", {
         status: "completed",
         assignmentId,
@@ -60,7 +57,6 @@ new Worker(
 
       console.error("❌ Worker Error:", error);
 
-      // ❌ Emit failed status
       getIO().emit("paper-status", {
         status: "failed",
         assignmentId,
@@ -71,7 +67,7 @@ new Worker(
   },
 
   {
-    connection: redisConnection.duplicate(),
+    connection: redisConnection,
   }
 );
 
