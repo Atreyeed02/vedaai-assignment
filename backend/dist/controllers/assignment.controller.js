@@ -7,10 +7,9 @@ exports.getAssignments = exports.createAssignment = void 0;
 const Assignment_1 = __importDefault(require("../models/Assignment"));
 const paperQueue_1 = require("../queues/paperQueue");
 const createAssignment = async (req, res) => {
-    console.log("[TEMPORARY DEBUG] backend controller hit: createAssignment");
+    
     try {
         const assignment = await Assignment_1.default.create(req.body);
-        console.log("[TEMPORARY DEBUG] Mongo save success:", assignment._id);
         // Trigger paper generation job on BullMQ
         const job = await paperQueue_1.paperQueue.add("generate-paper", {
             assignmentId: assignment._id,
@@ -18,7 +17,7 @@ const createAssignment = async (req, res) => {
             instructions: assignment.instructions,
             questionTypes: assignment.questionTypes,
         });
-        console.log("[TEMPORARY DEBUG] queue job added:", job.id);
+        
         res.status(201).json({
             success: true,
             data: assignment,
@@ -26,7 +25,7 @@ const createAssignment = async (req, res) => {
         });
     }
     catch (error) {
-        console.error("[TEMPORARY DEBUG] Failed to create assignment:", error);
+        
         res.status(500).json({
             success: false,
             message: "Failed to create assignment",

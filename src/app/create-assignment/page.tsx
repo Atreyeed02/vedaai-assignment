@@ -96,7 +96,7 @@ export default function CreateAssignment() {
     setDarkMode(!darkMode);
   };
   const publishAssignment = async () => {
-  console.log("[TEMPORARY DEBUG] Publish Assignment button clicked.");
+  // console.log("[TEMPORARY DEBUG] Publish Assignment button clicked.");
   setPublishing(true);
 
   try {
@@ -107,24 +107,24 @@ export default function CreateAssignment() {
       questionTypes,
     };
 
-    console.log(
-      "[TEMPORARY DEBUG] Sending API request to POST /assignments",
-      formData
-    );
+    // console.log(
+    //   "[TEMPORARY DEBUG] Sending API request to POST /assignments",
+    //   formData
+    // );
 
     const response = await api.post(
   "/assignments",
   formData
 );
 
-    console.log(
-      "[TEMPORARY DEBUG] API Response received:",
-      response.data
-    );
+    // console.log(
+    //   "[TEMPORARY DEBUG] API Response received:",
+    //   response.data
+    // );
 
-    console.log(
-      "[TEMPORARY DEBUG] Redirecting to /generated-paper"
-    );
+    // console.log(
+    //   "[TEMPORARY DEBUG] Redirecting to /generated-paper"
+    //  );
 
     window.location.href = `/generated-paper?jobId=${response.data.jobId}`;
 
