@@ -29,7 +29,7 @@ export const createAssignment = async (
       jobId: job.id,
     });
   } catch (error) {
-    // console.error("[TEMPORARY DEBUG] Failed to create assignment:", error);
+    console.error("[TEMPORARY DEBUG] Failed to create assignment:", error);
     res.status(500).json({
       success: false,
       message: "Failed to create assignment",
